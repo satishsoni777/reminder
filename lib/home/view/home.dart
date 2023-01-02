@@ -1,7 +1,10 @@
-import 'package:app_reminder/routes/navigation_manager.dart';
-import 'package:app_reminder/sdk/native_interface.dart';
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
+
+import 'package:app_reminder/home/controller/home_controller.dart';
+import 'package:app_reminder/home/view/home_tile.dart';
+import 'package:app_reminder/sdk/native_interface.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,9 +15,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late NativeInterface nativeInterface;
+  late HomePageController homePageController;
   @override
   void initState() {
     nativeInterface = NativeInterfaceImpl();
+    homePageController = HomePageControllerImp();
     nativeInterface.getInstalledApps();
     super.initState();
   }
@@ -24,16 +29,14 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-        },
+        onPressed: () {},
       ),
       body: ChangeNotifierProvider<NativeInterfaceImpl>.value(
           value: nativeInterface as NativeInterfaceImpl,
           builder: (context, snapshot) {
             {
-              return Consumer(
-                  builder: (context, NativeInterfaceImpl snapshot, p) {
-                if (snapshot.getApps.isEmpty) {
+              return Consumer(builder: (context, NativeInterfaceImpl snapshot, p) {
+                if (snapshot.usageInfo.isEmpty) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -44,20 +47,24 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 }
-                return ListView.builder(
-                    itemCount: nativeInterface.getApps.length,
-                    itemBuilder: (s, i) {
-                      return ListTile(
-                        title: Text(
-                          nativeInterface.getApps[i].appName,
-                        ),
-                        onTap: () {
-                        NavigationManager.usageDetails(context,
-                      nativeInterface.getApps[i].packageName,
-                        );
-                        },
-                      );
-                    });
+                return Column(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height * .3,
+                      child: Card(),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                          itemCount: nativeInterface.usageInfo.length,
+                          itemBuilder: (s, i) {
+                            return HomeTile(
+                              usageInfoModel: nativeInterface.usageInfo[i],
+                            );
+                          
+                          }),
+                    ),
+                  ],
+                );
               });
             }
           }),

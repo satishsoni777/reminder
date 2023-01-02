@@ -1,9 +1,11 @@
-import 'package:app_reminder/home/home.dart';
-import 'package:app_reminder/routes/routes.dart';
-import 'package:app_reminder/sdk/native_interface.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'package:app_usage/app_usage.dart';
+
+import 'package:app_reminder/home/view/home.dart';
+import 'package:app_reminder/routes/routes.dart';
+import 'package:app_reminder/sdk/native_interface.dart';
 
 void main() {
   runApp(const MyApp());
