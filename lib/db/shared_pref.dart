@@ -50,6 +50,5 @@ class SharedPrefImpl extends SharedPref {
 }
 
 class SharPrefKeys {
-  static const String rtcToken = "rtc_token";
   static const packages = "AppPackagesKey";
 }

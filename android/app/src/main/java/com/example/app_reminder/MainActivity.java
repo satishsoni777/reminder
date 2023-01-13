@@ -105,7 +105,7 @@ public class MainActivity extends FlutterActivity implements OnItemSelectedListe
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public void getUsage(Context context, String packageName, MethodChannel.Result result) {
-        appUsageHours.getUsageHours(getApplicationContext(), packageName, this,result);
+        appUsageHours.getUsageStats(getApplicationContext(), packageName, this,result);
         Log.d("onItemSelected #### ", packageName);
     }
 

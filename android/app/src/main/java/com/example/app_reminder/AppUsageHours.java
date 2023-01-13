@@ -11,8 +11,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 
 import java.util.ArrayList;
@@ -56,7 +58,7 @@ public class AppUsageHours {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public long getUsageHours(Context context, String packageName, MainActivity mainActivity, MethodChannel.Result result) {
+    public long getUsageStats(Context context, String packageName, MainActivity mainActivity, MethodChannel.Result result) {
         // Check if the usage stats permission is granted
         final boolean l = hasUsageStatsPermission(context, packageName);
         Log.e("#########", String.valueOf(l));
@@ -128,24 +130,6 @@ public class AppUsageHours {
     }
     public   void getIconColor(MethodChannel.Result result, Context context, String id) throws PackageManager.NameNotFoundException {
         PackageManager packageManager =context.getPackageManager();
-       final int as= context.getResources().getIdentifier("ic_launcher","drawable",id);
-        String iconColorHex="";
-        try {
-            Bitmap icon = BitmapFactory.decodeResource(packageManager.getResourcesForApplication(id), packageManager.getApplicationInfo(id, 0).icon);
-            int pixel = icon.getPixel(icon.getWidth() / 2, icon.getHeight() / 2);
-            int red = (pixel >> 16) & 0xff;
-            int green = (pixel >> 8) & 0xff;
-            int blue = pixel & 0xff;
-            int iconColor = (0xff << 24) | (red << 16) | (green << 8) | blue;
-            Log.d("", "Icon color: " + Integer.toHexString(iconColor));
-            iconColorHex=Integer.toHexString(iconColor);
-        } catch (PackageManager.NameNotFoundException e) {
-            result.success(null);
-        }
-        Map<String,String>map;
-        HashMap<String,String> data =new HashMap<String,String>();
-        data.put("iconColor",iconColorHex);
-        result.success(data);
-
+       final Drawable l= packageManager.getApplicationIcon(id);
     }
 }
