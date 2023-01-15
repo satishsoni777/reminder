@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Container(
                       height: MediaQuery.of(context).size.height * .3,
-                      child: Card(),
+                      child: Column(children: []),
                     ),
                     Expanded(
                       child: ListView.builder(
@@ -62,7 +62,6 @@ class _HomePageState extends State<HomePage> {
                             return HomeTile(
                               usageInfoModel: nativeInterface.usageInfo[i],
                             );
-                          
                           }),
                     ),
                   ],

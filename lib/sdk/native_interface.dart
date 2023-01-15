@@ -50,7 +50,7 @@ class NativeInterfaceImpl extends NativeInterface with ChangeNotifier {
       List<EventInfo> eventsInfo = [];
       List<dynamic> apps = [];
       List<UsageInfo> usageInfo = [];
-      Future.wait<dynamic>([_getInstalledApps(), _queryUsageStats(), _queryEventStats()])
+      Future.wait<dynamic>([_getInstalledApps(), _queryUsageStats(DateTime.now()), _queryEventStats(DateTime.now())])
           .then((List responses) => {
                 apps.addAll(responses.first),
                 usageInfo.addAll(responses[1]),
@@ -61,7 +61,7 @@ class NativeInterfaceImpl extends NativeInterface with ChangeNotifier {
                     {
                       for (var element1 in usageInfo)
                         {
-                          if (element.packageName == element1.packageName && double.parse(element1.totalTimeInForeground!)!=0.0)
+                          if (element.packageName == element1.packageName && double.parse(element1.totalTimeInForeground!) != 0.0)
                             {
                               _usageInfo.add(UsageInfoModel(
                                   usageInfo: element1,
@@ -77,7 +77,7 @@ class NativeInterfaceImpl extends NativeInterface with ChangeNotifier {
                     _usageInfo
                         .sort((a, b) => int.parse(b.usageInfo!.totalTimeInForeground!).compareTo(int.parse(a.usageInfo!.totalTimeInForeground!))),
                   },
-                notifyListeners()
+                addAll(),
               })
           .catchError((e) => {print(e), throw e});
     } catch (_) {
@@ -96,15 +96,26 @@ class NativeInterfaceImpl extends NativeInterface with ChangeNotifier {
     return DeviceApps.getInstalledApplications(includeAppIcons: true, includeSystemApps: true, onlyAppsWithLaunchIntent: true);
   }
 
-  Future _queryUsageStats() async {
-    DateTime endDate = DateTime.now();
+  Future _queryUsageStats(DateTime endDate) async {
     DateTime startDate = endDate.subtract(const Duration(hours: 1));
     return UsageStats.queryUsageStats(startDate, endDate);
   }
 
-  Future _queryEventStats() async {
-    DateTime endDate = DateTime.now();
+  Future _queryEventStats(DateTime endDate) async {
     DateTime startDate = endDate.subtract(const Duration(hours: 1));
     return (UsageStats.queryEventStats(startDate, endDate));
+  }
+
+  void addAll() {
+    int temp = 0;
+    for (int i = 0; i < _usageInfo.length; i++) {
+      if (_usageInfo[i].usageInfo?.packageName== _usageInfo[i].usageInfo?.packageName && i == 0) {
+        temp = int.parse(_usageInfo[i].usageInfo!.totalTimeInForeground!) + int.parse(_usageInfo[i + 1].usageInfo!.totalTimeInForeground!);
+      }
+      if(_usageInfo[i] == _usageInfo[i + 1]){
+        temp=int.parse(_usageInfo[i].usageInfo!.totalTimeInForeground!)+temp;
+      }
+    }
+    notifyListeners();
   }
 }
